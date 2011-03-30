@@ -65,3 +65,7 @@ chmod -R 755 ${SVN}/${PROJECTNAME}
 
 chown -R ${USERNAME}:${USERNAME} ${PROJECTHTDOCS}
 chown -R ${USERNAME}:${USERNAME} ${SVN}/${PROJECTNAME}
+
+# Log the SVN Projects being created
+echo "${DATE} ${USERNAME} : ${PROJECTNAME} : ${SVN}/${PROJECTNAME} : ${PROJECTHTDOCS}" >> ${COMPANY}/projects.txt
+echo "svn+ssh://${USERNAME}@116.66.194.122:2010${SVN}/${PROJECTNAME}" >> ${COMPANY}/checkouts.txt

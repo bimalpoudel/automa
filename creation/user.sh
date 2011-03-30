@@ -38,7 +38,7 @@ fi;
 # Generate server related parameters.
 # Admin can change them at any time of business.
 MYSQLROOT="root"; # Which user is allowed to administer the database?
-MYSQLPASSWORD="toor"; # Which user is allowed to administer the database?
+MYSQLPASSWORD="toor";
 SERVERNAME="192.168.1.104"; # IP or FQDN only - Useful in IP restrictions, ...
 DATABASEPREFIX="cn";
 COMPANY="/home/company";
