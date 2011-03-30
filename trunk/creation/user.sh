@@ -19,7 +19,7 @@ if [ "$#" != "1" ]; then
 fi;
 
 # Define a username here or take from user input parameter
-USERNAME="$1"
+USERNAME="$1";
 
 # Username should be a valid datatype (for safety reasons)
 if expr "${USERNAME}" : '[^a-z0-9]' > /dev/null; then
@@ -54,7 +54,7 @@ BASHRC="${HOME}/.bashrc";
 PASSWORD="`echo $RANDOM|md5sum|md5sum`"; PASSWORD=${PASSWORD:3:8};
 MYSQL="/opt/lampp/bin/mysql -u${MYSQLROOT} -p${MYSQLPASSWORD} -e";
 DATABASE="${DATABASEPREFIX}_${USERNAME}";
-DATE=`date '+%Y%m%d%H%M%S'`
+DATE=`date '+%Y%m%d%H%M%S'`;
 
 # Make the user directories first
 mkdir -p "${COMPANY}";
