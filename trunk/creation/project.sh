@@ -18,7 +18,7 @@ if [ "$#" != "2" ]; then
 fi;
 
 USERNAME="$1";
-PROJECT="$2";
+PROJECTNAME="$2";
 
 # Generate server related parameters.
 COMPANY="/home/company";
@@ -30,10 +30,9 @@ PUBLICHTML="${HOME}/public_html"; # Without the slash
 SVN="${HOME}/svn";
 DATE=`date '+%Y%m%d%H%M%S'`;
 
-mkdir -p "${SVN}";
-
 # Repo directory should not exist already.
 if [ ! -d "${SVN}/${PROJECTNAME}" ]; then
+  mkdir -p "${SVN}";
   svnadmin create ${SVN}/${PROJECTNAME}
 else
   echo 'Repository destination exists. Project creation failed.';
@@ -49,9 +48,9 @@ fi;
 svn checkout --quiet file://${SVN}/${PROJECTNAME} ${PROJECTHTDOCS}/
 
 # Create SVN Hooks
-HOOK=${SVN}/${PROJECTNAME}/hooks/post-commit
-touch ${HOOK}
-chmod 755 ${HOOK}
+HOOK="${SVN}/${PROJECTNAME}/hooks/post-commit";
+touch "${HOOK}";
+chmod 755 "${HOOK}";
 
 # Write the hook contents
 echo \#\!/bin/sh > ${HOOK}
