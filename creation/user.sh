@@ -104,7 +104,6 @@ echo \<p\>Hello \<strong\>${USERNAME}\<\/strong\>\!, your website works.\<\/p\> 
 echo \</body\> >> ${INDEX}
 echo \<\/html\> >> ${INDEX}
 
-
 # Store the passwords in a log file and give the file to the user
 LOGFILE=${HOME}/${USERNAME}.txt
 echo \# Log for ${USERNAME} > ${LOGFILE}
@@ -122,9 +121,10 @@ echo "${DATE} ${USERNAME} : ${PASSWORD}" >> ${COMPANY}/users.txt
 echo Thank you!
 echo Please check ${HOME}/${USERNAME}.txt for details.
 
-chmod -R 1700 ${HOME}/
-chmod -R 755 ${BASHRC}
-chmod -R 700 ${HTDOCS}/
+# High security (0700|1700), or loose security (0755)
+chmod -R 1755 ${HOME}/
+chmod -R 0755 ${BASHRC}
+chmod -R 0755 ${HTDOCS}/
 
 # A user's default group might have been modified.
 chown -R ${USERNAME}:${USERNAME} ${HOME}
