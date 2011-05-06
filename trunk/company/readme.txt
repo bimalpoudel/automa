@@ -1,0 +1,1 @@
+Sample directory sturcture under: /home/company
