@@ -1,0 +1,2 @@
+# Backup all databases once a day at 04:35 PM
+35 16 * * * /user/bin/backup
