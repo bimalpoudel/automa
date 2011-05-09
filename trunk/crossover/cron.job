@@ -1,0 +1,8 @@
+# Backup the databases in two different shots
+# MONTHLY and WEEKLY backups keep two version of databases per day
+55 16 * * * /usr/bin/database-backup-monthly
+30 12 * * * /usr/bin/database-backup-weekly
+
+# now, obsolete
+# 35 16 * * * /home/database-dumps/backup.sh
+# */5 * * * * /home/database-dumps/chmod.sh
