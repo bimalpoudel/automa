@@ -1,0 +1,1 @@
+These files are the help files of most frequently used applications.
