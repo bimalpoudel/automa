@@ -1,0 +1,22 @@
+ARCH(1)                    Linux Programmer’s Manual                   ARCH(1)
+
+
+
+NAME
+       arch - print machine architecture
+
+SYNOPSIS
+       arch
+
+DESCRIPTION
+       arch is deprecated command since release util-linux 2.13. Use uname -m.
+
+       On current Linux systems, arch prints things such  as  "i386",  "i486",
+       "i586", "alpha", "sparc", "arm", "m68k", "mips", "ppc".
+
+SEE ALSO
+       uname(1), uname(2)
+
+
+
+Linux 2.0                         4 July 1997                          ARCH(1)
