@@ -1,0 +1,25 @@
+# This script is a referece to how to set
+# static IP in ubuntu systems
+#
+# Reference:
+# http://www.ubuntugeek.com/how-to-set-a-static-ip-address-in-ubuntu-810-intrepid-ibex.html
+
+# Remove GNOME network manager
+# update-rc.d -f NetworkManager remove
+
+# vi /etc/network/interfaces
+
+auto lo eth0
+iface lo inet loopback
+iface eth0 inet static
+address 192.168.2.200
+netmask 255.255.255.0
+gateway 192.168.2.1
+
+# vi /etc/resolv.conf
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+nameserver 192.168.2.1
+nameserver 192.168.1.1
+
+# /etc/init.d/networking restart
