@@ -1,9 +1,5 @@
 #!/bin/sh
-# Creates the database for existing users only
-# Does not reset the password.
-# Example
-# database username databasename
-
+# Example: database username databasename
 PREFIX="con_"
 USERNAME="$1"
 DATABASE="${PREFIX}$2"
@@ -14,8 +10,8 @@ DBSCRIPTS="/tmp/${DATABASE}.log"
 
 echo \#DROP DATABASE IF EXISTS \`${DATABASE}\`\; > ${DBSCRIPTS}
 echo CREATE DATABASE \`${DATABASE}\` CHARACTER SET utf8 COLLATE utf8_general_ci\; >> ${DBSCRIPTS}
-echo GRANT ALL ON \`${DATABASE}\`.* TO \'${USERNAME}\'@\'localhost\'\; >> ${DBSCRIPTS}
-echo GRANT ALL ON \`${DATABASE}\`.* TO \'${USERNAME}\'@\'\%\'\; >> ${DBSCRIPTS}
+echo GRANT ALL ON \`${DATABASE}\`.* TO \'${USERNAME}\'@\'localhost\' IDENTIFIED BY \'${PASSWORD}\'\; >> ${DBSCRIPTS}
+echo GRANT ALL ON \`${DATABASE}\`.* TO \'${USERNAME}\'@\'%\' IDENTIFIED BY \'${PASSWORD}\'\; >> ${DBSCRIPTS}
 echo FLUSH PRIVILEGES\; >> ${DBSCRIPTS}
 cat ${DBSCRIPTS}
 
