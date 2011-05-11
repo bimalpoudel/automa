@@ -1,0 +1,49 @@
+#!/bin/sh
+
+#if [ "$(whoami)" != 'root' ]; then
+#  echo "No permissions to run $0 as non-root user.";
+##  exit 1;
+#fi;
+if [ "$#" != "2" ]; then
+  echo -e "Usage:\n\t$0 USERNAME PROJECTNAME\n";
+  exit 1;
+fi;
+
+USERNAME=$1
+PROJECT=$2
+
+SVN=/home/${USERNAME}/svn
+if [ ! -d "${SVN}" ]; then
+  mkdir -p ${SVN}
+fi;
+if [ ! -d "${SVN}/${PROJECT}" ]; then
+  svnadmin create ${SVN}/${PROJECT}
+fi;
+
+# Make project HTDOCS area
+HTDOCS=/home/${USERNAME}/htdocs/public_html/${PROJECT}
+if [ ! -d "${HTDOCS}" ]; then
+  mkdir -p ${HTDOCS}
+fi;
+# And immediately check it out from the local file system
+svn checkout --quiet file://${SVN}/${PROJECT} ${HTDOCS}/
+
+# Create SVN Hooks
+HOOK=${SVN}/${PROJECT}/hooks/post-commit
+touch ${HOOK}
+chmod 755 ${HOOK}
+
+# Write the hook contents
+echo \#\!/bin/sh > ${HOOK}
+echo REPOS="\$1" >> ${HOOK}
+echo REV="\$2" >> ${HOOK}
+echo svn update --quiet ${HTDOCS} >> ${HOOK}
+
+# Set the user permissions
+chmod -R 755 ${HTDOCS}
+chown -R ${USERNAME}:${USERNAME} ${HTDOCS}
+chmod -R 755 ${SVN}
+chown -R ${USERNAME}:${USERNAME} ${SVN}
+chmod -R 755 ${SVN}/${PROJECT}
+chown -R ${USERNAME}:${USERNAME} ${SVN}/${PROJECT}
+
