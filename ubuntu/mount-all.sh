@@ -8,10 +8,13 @@ for letter in b c d e f
 do
   for hdd in `ls /dev/sd${letter}?`
   do
+  
+  if [ -f $hdd ]; then
     dir=$(echo $hdd|sed 's/\/dev\/sd/hd/')
     umount $hdd
     mkdir -p /mnt/$dir
     mount $hdd /mnt/$dir
+  fi;
   done;
   echo $letter
 done;
