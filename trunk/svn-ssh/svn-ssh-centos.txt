@@ -1,0 +1,66 @@
+http://cameronyule.com/2008/07/multiple-users-with-svnssh
+
+
+below is centos version by Bimal
+=====================================
+
+# We need a group for our svn users
+groupadd svnusers
+ 
+# Add the users
+useradd svnadmin -g svnusers # this is the svn 'admin' user
+useradd svnuser1 -g svnusers
+useradd svnuser2 -g svnusers
+useradd svnuser3 -g svnusers
+useradd svnuser4 -g svnusers
+# … etc
+ 
+# Edit each svn user's .bashrc file, e.g.
+su - svnuser1
+nano -w .bashrc
+ 
+	# Add the followng line to the bottom
+	umask 002 # allow user + group to write, no other. 
+ 
+[ctrl+d]
+# Create the dir where we're storing the repo (as root)
+mkdir -p /usr/share/subversion/repositories
+ 
+# Set permissions on our new dir
+chown -R root.svnusers /usr/share/subversion/repositories
+chmod -R u+wrx,g+wrx,o-wxr /usr/share/subversion/repositories
+chown -R root.svnusers /usr/share/subversion
+ 
+# The following may be overkill
+# chown -R root.svnusers /usr/share
+chown -R root.svnusers /usr/share/subversion
+ 
+# Rename the original svnserve command into svnserve.bin 
+mv /usr/bin/svnserve /usr/bin/svnserve.bin
+ 
+# Create a new svnserve file
+nano -w /usr/bin/svnserve
+ 
+# Paste the following into nano and save as svnserve
+#!/bin/sh 
+# wrap in order to put root in by default 
+# Script implemented by Adrian Robert <arobert @cogsci.ucsd.edu> 
+exec /usr/bin/svnserve.bin -r /usr/share/subversion/repositories "$@"
+ 
+# Make our svnserve wrapper executable
+chmod u+wrx,g+rx-w,o+xr-w svnserve
+chmod u+wrx,g+rx-w,o+xr-w /usr/bin/svnserve
+ 
+# Log in as the svn user
+su - svn
+ 
+# Create our repos
+svnadmin create /usr/share/subversion/repositories/projects
+cd /usr/share/subversion/repositories/projects/conf
+ 
+# Edit the repo conf
+nano -w svnserve.conf
+ 
+# Add the following under the [general] header
+anon-access = none
+auth-access = write
