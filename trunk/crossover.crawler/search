@@ -1,0 +1,5 @@
+#!/bin/bash
+# Searches a process
+# search PROCESSNAME
+
+ps aux | grep $1

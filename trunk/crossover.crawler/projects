@@ -1,0 +1,1 @@
+ls -la /home/${1}/svn
