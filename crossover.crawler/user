@@ -1,0 +1,111 @@
+#!/bin/bash
+# Skeleton for creating a new user, FTP/SSH and MySQL database
+# sh skeleton.sh USERNAME
+
+# Avoid non-root users
+# test "$(whoami)" != 'root' && (echo you are using a non-privileged account; exit 1)
+
+#if [ "$(whoami)" != 'root' ]; then
+#  echo "No permissions to run $0 as non-root user."
+#  exit 1;
+#fi
+
+
+if [ "$#" != "1" ]; then
+  echo -e "Usage:\n\t$0 USERNAME\n"
+  exit 1
+fi;
+
+# Define a user name manually, here
+# Define a user from parameter
+USERNAME=$1
+
+# Server related parameters
+SERVERNAME="192.168.0.5"
+MYSQL="/opt/lampp/bin/mysql -h192.168.0.5 -uroot -pittzfzq5 -e"
+# PASS=$(</dev/urandom tr -dc '0-9a-zA-Z' | head -c ${1:-8} 2>&1)
+# PASS=$(</dev/urandom tr -dc '0-9a-zA-Z' | head -c ${1:-8})
+PASS=$(echo $RANDOM | md5sum | md5sum) ; PASS=$(echo "${PASS:2:9}");
+
+
+# Risky operation to remove the old files
+# userdel ${USERNAME}
+# userdel --force ${USERNAME}
+# userdel --force --remove ${USERNAME}
+# rm -rf /home/${USERNAME}/
+# rm -rf /home/htdocs/${USERNAME}/
+
+# Create the user
+useradd ${USERNAME}
+
+
+# Reset the password for this user
+echo ${PASS} | passwd --stdin ${USERNAME} > /dev/null
+
+
+# Remake the login directory
+mkdir -p /home/${USERNAME}/htdocs
+usermod --home /home/${USERNAME}/htdocs ${USERNAME}
+
+
+# Make the alias and first time run scripts
+BASHRC=/home/${USERNAME}/htdocs/.bashrc
+echo \# Scripts for ${USERNAME} > ${BASHRC}
+echo alias mysql=/opt/lampp/bin/mysql >> ${BASHRC}
+echo alias mysqldump=/opt/lampp/bin/mysqldump >> ${BASHRC}
+
+chmod -R 755 ${BASHRC}
+chmod -R 700 /home/${USERNAME}/htdocs
+chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/htdocs/
+
+
+
+# Make the database and assign the password
+# It is risky to drop a database
+# ${MYSQL} "DROP DATABASE IF EXISTS ${USERNAME};"
+${MYSQL} "CREATE DATABASE  IF NOT EXISTS ${USERNAME} CHARACTER SET utf8 COLLATE utf8_general_ci;"
+${MYSQL} "GRANT ALL ON ${USERNAME}.* TO '${USERNAME}'@'%' IDENTIFIED BY '${PASS}';"
+${MYSQL} "GRANT ALL ON ${USERNAME}.* TO '${USERNAME}'@'localhost' IDENTIFIED BY '${PASS}';"
+${MYSQL} "FLUSH PRIVILEGES;"
+
+
+
+# Create the index.php for the user
+mkdir -p /home/htdocs/${USERNAME}
+INDEX=/home/htdocs/${USERNAME}/index.php
+echo \<html xmlns="http://www.w3.org/1999/xhtml"\> > ${INDEX}
+echo \<head\> >> ${INDEX}
+echo \<meta http-equiv="Content-Type" content="text/html; charset=utf-8" \/\> >> ${INDEX}
+echo \<title\>${USERNAME}\<\/title\> >> ${INDEX}
+echo \</head\> >> ${INDEX}
+echo \<body\> >> ${INDEX}
+echo \<p\>Hello \<strong\>${USERNAME}\<\/strong\>\!, your website works.\<\/p\> >> ${INDEX}
+echo \</body\> >> ${INDEX}
+echo \<\/html\> >> ${INDEX}
+chmod -R 755 /home/htdocs/${USERNAME}
+chown -R ${USERNAME}:${USERNAME} /home/htdocs/${USERNAME}
+# cat ${INDEX}
+
+# Copy the HTDOCS into the user's FTP location
+ln -s /home/htdocs/${USERNAME} /home/${USERNAME}/htdocs/public_html
+chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/htdocs/public_html
+chmod -R 755 /home/${USERNAME}/htdocs/public_html
+
+
+# Store the passwords
+LOGFILE=/home/${USERNAME}/${USERNAME}.txt
+echo \# Log for ${USERNAME} > ${LOGFILE}
+echo MySQL password\: ${PASS} >> ${LOGFILE}
+echo mysql -hlocalhost -u${USERNAME} -p${PASS} ${USERNAME} >> ${LOGFILE}
+echo FTP ${USERNAME}:${PASS}@${SERVERNAME} >> ${LOGFILE}
+echo HTDOCS /home/htdocs/${USERNAME}/ >> ${LOGFILE}
+echo HTDOCS /home/${USERNAME}/public_html/ >> ${LOGFILE}
+# DATE=`date '+%Y%m%d%H%M%S'`
+# echo Created on ${DATE} >> ${LOGFILE}
+# cat ${LOGFILE}
+
+
+# Show a friendly message
+echo Thank you!
+echo Please check /home/${USERNAME}/${USERNAME}.txt for details.
+

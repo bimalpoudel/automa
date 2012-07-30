@@ -1,0 +1,4 @@
+#!/bin/bash
+# Crawler for Australian Yello Pages
+
+php -f /home/australianyellowpages/4.php &

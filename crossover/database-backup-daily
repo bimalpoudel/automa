@@ -1,0 +1,28 @@
+#!/bin/sh
+# Keeps a quick snapshot of othe database daily.
+# Maximum old age: 24 Hours
+#
+# Cron entry
+# 15 20 * * * /usr/bin/database-backup-daily
+#
+# usage
+# /usr/bin/database-backup-daily
+
+MYSQLDUMP="/opt/lampp/bin/mysqldump --routine -uroot -pd47tvyjp";
+DUMPTO="/home/database-dumps/daily";
+DATADIR="/opt/lampp/var/mysql";
+
+# Just be sure that the dump location exists
+mkdir -p "${DUMPTO}";
+
+# loop through the data directories
+# and take individual backups
+# assume each directory name as a database name
+for DATABASE in `ls ${DATADIR}`
+do
+  if [ -d "${DATADIR}/${DATABASE}" ]; then
+    # rm -rf ${DUMPTO}/${DATABASE}.dmp
+    ${MYSQLDUMP} ${DATABASE} > ${DUMPTO}/${DATABASE}.dmp
+    touch ${DUMPTO}/${DATABASE}.dmp
+  fi
+done;
