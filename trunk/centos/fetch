@@ -1,0 +1,4 @@
+#!/bin/bash
+# /usr/local/bin/fetch
+
+scp USER@SERVER/$1 /tmp
