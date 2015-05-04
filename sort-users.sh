@@ -1,6 +1,6 @@
 #!/bin/bash
 # Sorts the entries in passwd and shadow files.
-# Helpful in manually edting the passwd and shadow files.
+# Helpful in manually editing the passwd and shadow files.
 # Do not use it unless you know what you are doing.
 # Usage
 #   /bin/bash sort-users.sh
